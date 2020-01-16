@@ -25,12 +25,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.btn_login:
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                finish();
                 break;
 
             case R.id.tv_signup:
                 startActivity(new Intent(getApplicationContext(), SignupActivity.class));
-                finish();
                 break;
         }
     }

@@ -25,6 +25,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.teacher.Model_SelectedCourses;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONArray;
@@ -47,6 +53,9 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
     //Loader
     private KProgressHUD loader;
 
+    //Firebase
+    private String User_Key_Firebase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +63,7 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Initializing Views
         initViews();
@@ -62,6 +71,23 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
         Intent intent = getIntent();
         Teacher_ID = intent.getStringExtra("teacher_id");
     }
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (dataSnapshot.exists()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    User_Key_Firebase = snapshot.getKey();
+                }
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 
     private void initViews() {
 
@@ -125,6 +151,14 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
                                 String name = innerObj.getString("firstname") + " " + innerObj.getString("lastname");
                                 tv_name.setText(name);
                                 tv_email.setText(innerObj.getString("email"));
+
+                                //Firebase
+                                Query query3 = FirebaseDatabase.getInstance().getReference("Users")
+                                        .orderByChild("email")
+                                        .equalTo(innerObj.getString("email"));
+
+                                query3.addListenerForSingleValueEvent(valueEventListener);
+
                                 tv_phone.setText(innerObj.getString("telephone"));
                                 tv_country.setText(innerObj.getString("country"));
                                 tv_city.setText(innerObj.getString("city"));
@@ -240,10 +274,14 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.fab_whatsapp:
-                openWhatsApp(
+
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra("user_id", User_Key_Firebase);
+                startActivity(intent);
+                /*openWhatsApp(
                         tv_phone.getText().toString().trim(),
                         TeacherDetailActivity.this
-                );
+                );*/
                 break;
         }
     }

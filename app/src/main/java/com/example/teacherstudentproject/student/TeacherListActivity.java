@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -22,6 +23,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONArray;
@@ -46,10 +52,15 @@ public class TeacherListActivity extends AppCompatActivity {
     private Adapter_TeacherList adapter;
     private List<Model_TeacherList> arr_list;
 
+    DatabaseReference dbArtists;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_list);
+
+        dbArtists = FirebaseDatabase.getInstance().getReference().child("Users");
+        dbArtists.addListenerForSingleValueEvent(valueEventListener);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPre", MODE_PRIVATE);
         latitude = sharedPreferences.getString("latitude", "");
@@ -57,7 +68,7 @@ public class TeacherListActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Initializing Views
         initView();
@@ -65,6 +76,32 @@ public class TeacherListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Course_ID = intent.getStringExtra("course_id");
     }
+
+    ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            //artistList.clear();
+            if (dataSnapshot.exists()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    /*Artist artist = snapshot.getValue(Artist.class);
+                    artistList.add(artist);*/
+
+                    if (snapshot.child("courses").hasChild("science")) {
+
+                        Toast.makeText(getApplicationContext(), snapshot.toString(),
+                                Toast.LENGTH_LONG).show();
+                        Log.e("Data", snapshot.toString());
+                    }
+                }
+                //adapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -87,6 +124,7 @@ public class TeacherListActivity extends AppCompatActivity {
         recyclerView_teachers.setAdapter(adapter);
         isNetworkAvailable();
     }
+
     private void isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -95,7 +133,7 @@ public class TeacherListActivity extends AppCompatActivity {
 
             getTeachers();
         } else if (networkInfo == null) {
-            Toast.makeText(getApplicationContext(),R.string.no_internet_msg,
+            Toast.makeText(getApplicationContext(), R.string.no_internet_msg,
                     Toast.LENGTH_LONG).show();
         }
 

@@ -13,7 +13,6 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/MyCustomStyle" >
 
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -40,7 +39,7 @@
             android:padding="10dp"
             android:inputType="textEmailAddress"
             android:imeOptions="actionNext"
-            android:drawableStart="@drawable/ic_email"
+            android:drawableLeft="@drawable/ic_email"
             android:drawablePadding="5dp"
             android:autofillHints="@string/email" />
 
@@ -49,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:drawableStart="@drawable/ic_password"
+            android:drawableLeft="@drawable/ic_password"
             android:drawablePadding="5dp"
             android:hint="@string/password"
             android:imeOptions="actionDone"

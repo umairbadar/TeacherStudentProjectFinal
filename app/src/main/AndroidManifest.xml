@@ -16,33 +16,34 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <activity android:name=".teacher.AddNewCourseActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".teacher.CoursesActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".teacher.PortfolioDetailsActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".student.StudentProfileActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".student.TeacherDetailActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".teacher.ChangePasswordActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".student.TeacherListActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".teacher.TeacherActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".student.SelectCoursesActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".student.ProfileActivity"></activity>
+        <activity
+            android:name=".teacher.AddNewCourseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".teacher.CoursesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".teacher.PortfolioDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".student.StudentProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".student.TeacherDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".teacher.ChangePasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".student.TeacherListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".teacher.TeacherActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".student.SelectCoursesActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -54,16 +55,19 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_place_api" />
 
-        <activity android:name=".signup.SignupActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".login.LoginActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".splash.SplashActivity"
+        <activity
+            android:name=".signup.SignupActivity"
+            android:parentActivityName=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:parentActivityName=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".welcome.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".splash.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,7 +75,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

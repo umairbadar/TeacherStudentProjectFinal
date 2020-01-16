@@ -70,7 +70,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //Initializing Views
         initViews();
@@ -137,7 +137,6 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
         intent.putExtra("course_id", Course_ID);
         startActivity(intent);
         finish();
-
     }
 
     private void initViews(){
@@ -205,7 +204,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
                                 arr_courses_cat_id.add(object.getString("category_id"));
                                 arr_courses_cat.add(object.getString("name"));
                             }
-                            spn_course_cat.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                            spn_course_cat.setAdapter(new ArrayAdapter<>(SelectCoursesActivity.this,
                                     android.R.layout.simple_spinner_dropdown_item, arr_courses_cat));
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -247,7 +246,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
                                     arr_courses.add(object.getString("name"));
                                 }
 
-                                spn_courses.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                                spn_courses.setAdapter(new ArrayAdapter<>(SelectCoursesActivity.this,
                                         android.R.layout.simple_spinner_dropdown_item, arr_courses));
                             } else {
                                 spn_courses.setVisibility(View.GONE);

@@ -13,6 +13,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/requests"
+        android:title="@string/requests"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/logout"
         android:title="@string/logout"
         app:showAsAction="never" />

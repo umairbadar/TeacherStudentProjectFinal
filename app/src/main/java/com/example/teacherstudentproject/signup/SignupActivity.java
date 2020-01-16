@@ -1,5 +1,6 @@
 package com.example.teacherstudentproject.signup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +39,14 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -79,15 +89,22 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private ArrayList<String> arr_states_id;
     private String state_id;
 
+    //Firebase Datebase
+    private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        mAuth = FirebaseAuth.getInstance();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Initializing Views
         initViews();
@@ -154,7 +171,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         arr_customer_group.add("Select group");
         arr_customer_group.add("Instructor");
         arr_customer_group.add("Student");
-        spn_customer_group.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+        spn_customer_group.setAdapter(new ArrayAdapter<>(SignupActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, arr_customer_group));
 
         spn_customer_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -215,7 +232,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                 arr_countries_id.add(object.getString("country_id"));
                                 arr_countries.add(object.getString("name"));
                             }
-                            spn_country.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                            spn_country.setAdapter(new ArrayAdapter<>(SignupActivity.this,
                                     android.R.layout.simple_spinner_dropdown_item, arr_countries));
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -260,7 +277,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                     arr_states_id.add(object.getString("zone_id"));
                                     arr_states.add(object.getString("name"));
                                 }
-                                spn_state.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                                spn_state.setAdapter(new ArrayAdapter<>(SignupActivity.this,
                                         android.R.layout.simple_spinner_dropdown_item, arr_states));
                             } else {
                                 spn_state.setVisibility(View.GONE);
@@ -407,6 +424,57 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    private void registerUserInFirebase(){
+
+        mAuth.createUserWithEmailAndPassword(et_email.getText().toString(), et_password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = currentUser.getUid();
+
+                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+
+                    HashMap<String, String> userMap = new HashMap<>();
+                    userMap.put("role", customer_group);
+                    userMap.put("firstname", et_first_name.getText().toString());
+                    userMap.put("lastname", et_last_name.getText().toString());
+                    userMap.put("email", et_email.getText().toString());
+                    userMap.put("telephone", et_telephone.getText().toString());
+                    userMap.put("address", et_address.getText().toString());
+                    userMap.put("latitude", lattitude);
+                    userMap.put("longitude", longitude);
+                    userMap.put("city", et_city.getText().toString());
+                    userMap.put("device_token", FirebaseInstanceId.getInstance().getToken());
+
+                    databaseReference.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                loader.dismiss();
+                                Toast.makeText(getApplicationContext(), "Please Login to continue",
+                                        Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                finish();
+                            }
+                        }
+                    });
+
+                } else {
+                    loader.dismiss();
+                    Toast.makeText(getApplicationContext(), task.getException().toString(),
+                            Toast.LENGTH_LONG).show();
+                    Log.d("FirebaseError", task.getException().toString());
+                }
+            }
+        });
+
+
+    }
+
     private void registerUser() {
 
         loader.show();
@@ -418,16 +486,13 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             boolean status = jsonObject.getBoolean("success");
-                            String msg = jsonObject.getString("data");
                             if (status) {
-                                loader.dismiss();
-                                Toast.makeText(getApplicationContext(), "Please Login to continue",
-                                        Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                finish();
+                                //String msg = jsonObject.getString("data");
+                                registerUserInFirebase();
+
                             } else {
                                 loader.dismiss();
-                                Toast.makeText(getApplicationContext(), msg,
+                                Toast.makeText(getApplicationContext(), jsonObject.getString("error"),
                                         Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {

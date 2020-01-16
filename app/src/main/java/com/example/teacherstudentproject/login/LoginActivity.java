@@ -1,5 +1,6 @@
 package com.example.teacherstudentproject.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -26,6 +27,14 @@ import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.student.SelectCoursesActivity;
 import com.example.teacherstudentproject.teacher.TeacherActivity;
 import com.example.teacherstudentproject.welcome.WelcomeActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
@@ -45,14 +54,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Loader
     private KProgressHUD loader;
 
+    //Firebase
+    private FirebaseAuth mAuth;
+    private DatabaseReference userDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        userDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sharedPreferences = getSharedPreferences("MyPre", MODE_PRIVATE);
 
@@ -77,6 +95,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
     }
 
+    private void loginUserInFirebase(final String customerGroup) {
+
+        mAuth.signInWithEmailAndPassword(et_email.getText().toString(), et_password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    loader.dismiss();
+
+                    String current_user_id = mAuth.getCurrentUser().getUid();
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+                    userDatabase.child(current_user_id).child("device_token").setValue(deviceToken)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            if (customerGroup.equals("1")) {
+                                startActivity(new Intent(getApplicationContext(), TeacherActivity.class));
+                                finish();
+                            } else {
+                                startActivity(new Intent(getApplicationContext(), SelectCoursesActivity.class));
+                                finish();
+                            }
+                        }
+                    });
+                } else {
+
+                    loader.dismiss();
+                    Toast.makeText(getApplicationContext(), task.getException().toString(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
     private void loginUser() {
 
         loader.show();
@@ -88,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject jsonObject = new JSONObject(response);
                             boolean status = jsonObject.getBoolean("success");
                             if (status) {
-                                loader.dismiss();
+                                //loader.dismiss();
 
                                 JSONObject innerObj = jsonObject.getJSONObject("data");
 
@@ -121,13 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 editor.putBoolean("saveLogin", true);
                                 editor.apply();
 
-                                if (customerGroup.equals("1")) {
-                                    startActivity(new Intent(getApplicationContext(), TeacherActivity.class));
-                                    finish();
-                                } else {
-                                    startActivity(new Intent(getApplicationContext(), SelectCoursesActivity.class));
-                                    finish();
-                                }
+                                loginUserInFirebase(customerGroup);
 
                             } else {
                                 loader.dismiss();
