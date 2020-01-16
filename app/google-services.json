@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "244811153330",
+    "firebase_url": "https://find-your-instructor.firebaseio.com",
+    "project_id": "find-your-instructor",
+    "storage_bucket": "find-your-instructor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244811153330:android:cdd55b20c3e0b971f7aeab",
+        "android_client_info": {
+          "package_name": "com.example.teacherstudentproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244811153330-c06j06qrf90u2v03vpcfjhvjprs3d4p1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.teacherstudentproject",
+            "certificate_hash": "1b01d9e7d60bde1bfd0c9b36cd0343251e60cee0"
+          }
+        },
+        {
+          "client_id": "244811153330-vhhpadugft6bhpgchh628h672ruhp30l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADdwCR34C5IPhYKqUdWWMSNcm128bBidU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "244811153330-vhhpadugft6bhpgchh628h672ruhp30l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
