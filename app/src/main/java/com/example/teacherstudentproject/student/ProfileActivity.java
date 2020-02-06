@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
 
         user_id = getIntent().getStringExtra("user_id");
+        //Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
         //user_name = getIntent().getStringExtra("user_name");
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();

@@ -31,11 +31,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
+import com.example.teacherstudentproject.teacher.request.RequestActivity;
 import com.example.teacherstudentproject.welcome.WelcomeActivity;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
@@ -43,9 +46,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class TeacherActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private FirebaseAuth auth;
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -56,7 +60,7 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
     //location
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private int PLACE_PICKER_REQUEST = 1;
-    private String lattitude = "", longitude = "";
+    private String lattitude = "", longitude = "", uid;
 
     private EditText et_first_name, et_last_name, et_email, et_telephone, et_address, et_city;
 
@@ -68,9 +72,14 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         sharedPreferences = getSharedPreferences("MyPre", MODE_PRIVATE);
+
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getInstance().getCurrentUser();
+        uid = currentUser.getUid();
+        //Toast.makeText(getApplicationContext(), uid, Toast.LENGTH_LONG).show();
 
         //Initializing Views
         initViews();
@@ -102,6 +111,13 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
         } else if (id == R.id.portfolio) {
             startActivity(new Intent(getApplicationContext(), PortfolioDetailsActivity.class));
             finish();
+        } else if (id == R.id.requests) {
+            Intent requestIntent = new Intent(getApplicationContext(), RequestActivity.class);
+            requestIntent.putExtra("uid", uid);
+            startActivity(requestIntent);
+        } else if (id == R.id.students) {
+            Intent studentsIntent = new Intent(getApplicationContext(), StudentsActivity.class);
+            startActivity(studentsIntent);
         }
 
         return true;

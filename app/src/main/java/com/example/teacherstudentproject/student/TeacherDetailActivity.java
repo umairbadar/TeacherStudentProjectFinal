@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.teacherstudentproject.ChatActivity;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.teacher.Model_SelectedCourses;
@@ -265,18 +266,23 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
         switch (v.getId()) {
 
-            case R.id.fab_getDirections:
+            /*case R.id.fab_getDirections:
                 getDirections();
-                break;
+                break;*/
 
             case R.id.fab_message:
-                openMessage(tv_phone.getText().toString().trim());
+                //openMessage(tv_phone.getText().toString().trim());
+
+                Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
+                chatIntent.putExtra("user_id", User_Key_Firebase);
+                startActivity(chatIntent);
                 break;
 
             case R.id.fab_whatsapp:
 
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 intent.putExtra("user_id", User_Key_Firebase);
+                intent.putExtra("username", tv_name.getText().toString());
                 startActivity(intent);
                 /*openWhatsApp(
                         tv_phone.getText().toString().trim(),

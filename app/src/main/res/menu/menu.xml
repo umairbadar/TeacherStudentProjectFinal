@@ -13,9 +13,15 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/students"
+        android:title="@string/students"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/requests"
         android:title="@string/requests"
-        app:showAsAction="never" />
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_friend"/>
 
     <item
         android:id="@+id/logout"

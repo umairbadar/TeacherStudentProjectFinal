@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name=".endpoints.LapitChat"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@drawable/icon"
@@ -16,7 +17,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".student.ProfileActivity"></activity>
+
+        <activity android:name=".ChatActivity"/>
+        <activity
+            android:name=".teacher.StudentsActivity"
+            android:parentActivityName=".teacher.TeacherActivity" />
+        <activity
+            android:name=".teacher.request.RequestActivity"
+            android:parentActivityName=".teacher.TeacherActivity" />
+        <activity android:name=".student.ProfileActivity" />
         <activity
             android:name=".teacher.AddNewCourseActivity"
             android:screenOrientation="portrait" />

@@ -68,6 +68,9 @@
     <string name="send_friend_request">Send Friend Request</string>
     <string name="display_name">Display Name</string>
     <string name="requests">Requests</string>
+    <string name="students">Students</string>
+    <string name="last_seen">Last Seen</string>
+    <string name="status">Status</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

@@ -47,4 +47,7 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
+
+    //firebase UI
+    implementation 'com.firebaseui:firebase-ui-database:1.2.0'
 }
