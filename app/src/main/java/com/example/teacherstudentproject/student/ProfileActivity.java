@@ -28,8 +28,7 @@ import java.util.Map;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tv_display_name;
-    private ImageView user_image;
-    private DatabaseReference databaseReference, friendReqdataRef, friendDatabase, notificationDatabase, mRootRef;
+    private DatabaseReference databaseReference, friendReqdataRef, friendDatabase, mRootRef;
     private ProgressDialog progressDialog;
     private String current_state, user_id;
     private FirebaseUser currentUser;
@@ -40,9 +39,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Initializing Views
+        initViews();
+
+    }
+
+    private void initViews(){
+
         user_id = getIntent().getStringExtra("user_id");
-        //Toast.makeText(getApplicationContext(), user_id, Toast.LENGTH_LONG).show();
-        //user_name = getIntent().getStringExtra("user_name");
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -51,9 +55,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
         friendReqdataRef = FirebaseDatabase.getInstance().getReference().child("Friend_req");
         friendDatabase = FirebaseDatabase.getInstance().getReference().child("Friends");
-        notificationDatabase = FirebaseDatabase.getInstance().getReference().child("notifications");
 
-        user_image = findViewById(R.id.user_image);
         tv_display_name = findViewById(R.id.tv_display_name);
         btn_send_friend_req = findViewById(R.id.btn_send_friend_req);
 
@@ -73,12 +75,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 String lastname = dataSnapshot.child("lastname").getValue().toString();
 
                 tv_display_name.setText(firstname + " " + lastname);
-
-                /*Picasso
-                        .with(ProfileActivity.this)
-                        .load(image)
-                        .placeholder(R.drawable.default_avatar)
-                        .into(user_image);*/
 
                 //-------------------------- Friends List / Request Feature -------------------
 

@@ -71,7 +71,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
 
         user_id = getIntent().getStringExtra("user_id");
-        //username = getIntent().getStringExtra("username");
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.chat_appbar);
@@ -109,8 +108,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         messageList.setLayoutManager(mLinearLayout);
         messageList.setAdapter(mAdapter);
         loadMessages();
-
-        //custom_bar_name.setText(username);
 
         rootRef.child("Users").child(user_id).addValueEventListener(new ValueEventListener() {
             @Override
