@@ -1,4 +1,4 @@
-package com.example.teacherstudentproject;
+package com.example.teacherstudentproject.chat;
 
 import android.app.Application;
 import android.content.Context;

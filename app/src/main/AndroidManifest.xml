@@ -16,9 +16,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
 
-        <activity android:name=".ChatActivity"/>
+        <activity android:name=".chat.ChatActivity"/>
         <activity
             android:name=".teacher.StudentsActivity"
             android:parentActivityName=".teacher.TeacherActivity" />

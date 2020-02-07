@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ededed"
     android:orientation="vertical"
-    tools:context=".ChatActivity">
+    tools:context=".chat.ChatActivity">
 
     <include
         android:id="@+id/chat_appbar"
@@ -41,7 +41,7 @@
             android:layout_weight="9"
             android:hint="Enter Message here.."
             android:imeOptions="actionSend"
-            android:inputType="text"
+            android:inputType="textCapSentences"
             android:padding="15dp" />
 
         <ImageButton

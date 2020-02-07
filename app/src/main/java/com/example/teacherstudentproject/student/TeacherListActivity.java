@@ -157,12 +157,14 @@ public class TeacherListActivity extends AppCompatActivity {
                                     JSONObject object = jsonArray.getJSONObject(i);
                                     String id = object.getString("teacher_id");
                                     String name = object.getString("firstname") + " " + object.getString("lastname");
-                                    String distance = object.getString("distance");
+                                    //String distance = object.getString("distance");
+                                    double distance_in_KM = Double.parseDouble(object.getString("distance"));
+                                    double distanec_in_Miles = distance_in_KM * 0.621;
 
                                     Model_TeacherList item = new Model_TeacherList(
                                             id,
                                             name,
-                                            distance + " km away"
+                                            String.format("%.2f miles away", distanec_in_Miles)
                                     );
                                     arr_list.add(item);
                                 }

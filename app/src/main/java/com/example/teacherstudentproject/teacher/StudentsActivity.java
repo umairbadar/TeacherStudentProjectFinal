@@ -1,21 +1,19 @@
 package com.example.teacherstudentproject.teacher;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.teacherstudentproject.ChatActivity;
-import com.example.teacherstudentproject.GetTimeAgo;
+import com.example.teacherstudentproject.chat.ChatActivity;
+import com.example.teacherstudentproject.chat.GetTimeAgo;
 import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.teacher.request.ModelRequest;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -111,7 +109,6 @@ public class StudentsActivity extends AppCompatActivity {
 
                                 Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
                                 chatIntent.putExtra("user_id", list_user_id);
-                                chatIntent.putExtra("username", firstname + " " + lastname);
                                 startActivity(chatIntent);
                             }
                         });

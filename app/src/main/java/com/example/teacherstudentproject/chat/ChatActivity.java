@@ -1,4 +1,4 @@
-package com.example.teacherstudentproject;
+package com.example.teacherstudentproject.chat;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.welcome.WelcomeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

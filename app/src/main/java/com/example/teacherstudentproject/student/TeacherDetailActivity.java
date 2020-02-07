@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.teacherstudentproject.ChatActivity;
+import com.example.teacherstudentproject.chat.ChatActivity;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
-import com.example.teacherstudentproject.teacher.Model_SelectedCourses;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,24 +40,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class TeacherDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView tv_name, tv_email, tv_phone, tv_country, tv_city, tv_address, tv_education, tv_specialization,
             tv_experience, tv_courses;
 
-    private String Teacher_ID, lat = "", lng = "";
+    private String Teacher_ID, lat = "", lng = "", currentUserID;
 
     //Loader
     private KProgressHUD loader;
 
     //Firebase
     private String User_Key_Firebase;
+    private DatabaseReference databaseReference, friendDatabaseRef, userDatabaseRef;
+    private FirebaseAuth mAuth;
+
+    //FloatingActionButton
+    private FloatingActionButton fab_messages, fab_send_req;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,24 +77,69 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
         Teacher_ID = intent.getStringExtra("teacher_id");
     }
 
-    ValueEventListener valueEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+    private void initViews() {
 
-                    User_Key_Firebase = snapshot.getKey();
+        fab_messages = findViewById(R.id.fab_message);
+        fab_send_req = findViewById(R.id.fab_send_req);
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild("Friends")){
+
+                    friendDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Friends");
+                    friendDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot.hasChild(currentUserID)){
+
+                                userDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(currentUserID);
+                                userDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        if (dataSnapshot.hasChild(User_Key_Firebase)){
+
+                                            fab_send_req.hide();
+                                            fab_messages.show();
+                                        } else {
+
+                                            fab_send_req.show();
+                                            fab_messages.hide();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                } else {
+
+                    fab_send_req.show();
+                    fab_messages.hide();
                 }
             }
-        }
 
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        }
-    };
-
-    private void initViews() {
+            }
+        });
 
         loader = KProgressHUD.create(TeacherDetailActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -153,12 +202,8 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
                                 tv_name.setText(name);
                                 tv_email.setText(innerObj.getString("email"));
 
-                                //Firebase
-                                Query query3 = FirebaseDatabase.getInstance().getReference("Users")
-                                        .orderByChild("email")
-                                        .equalTo(innerObj.getString("email"));
-
-                                query3.addListenerForSingleValueEvent(valueEventListener);
+                                //User Firebase ID
+                                User_Key_Firebase = innerObj.getString("firebase_id");
 
                                 tv_phone.setText(innerObj.getString("telephone"));
                                 tv_country.setText(innerObj.getString("country"));
@@ -278,11 +323,10 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
                 startActivity(chatIntent);
                 break;
 
-            case R.id.fab_whatsapp:
+            case R.id.fab_send_req:
 
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 intent.putExtra("user_id", User_Key_Firebase);
-                intent.putExtra("username", tv_name.getText().toString());
                 startActivity(intent);
                 /*openWhatsApp(
                         tv_phone.getText().toString().trim(),

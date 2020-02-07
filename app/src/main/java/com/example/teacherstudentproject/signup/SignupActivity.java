@@ -92,6 +92,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     //Firebase Datebase
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private FirebaseUser currentUser;
 
 
     @Override
@@ -100,6 +101,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_signup);
 
         mAuth = FirebaseAuth.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -413,6 +415,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         } else if (TextUtils.isEmpty(et_password.getText())) {
             et_password.setError("Please enter password");
             et_password.requestFocus();
+        } else if (et_password.getText().length() < 6){
+            et_password.setError("Password must be 6 characters long");
+            et_password.requestFocus();
+
         } else if (TextUtils.isEmpty(et_confirmPassword.getText())) {
             et_confirmPassword.setError("Please enter confirm password");
             et_confirmPassword.requestFocus();
@@ -420,11 +426,13 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(getApplicationContext(), "Password not match",
                     Toast.LENGTH_LONG).show();
         } else {
-            registerUser();
+            registerUserInFirebase();
         }
     }
 
     private void registerUserInFirebase(){
+
+        loader.show();
 
         mAuth.createUserWithEmailAndPassword(et_email.getText().toString(), et_password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -432,10 +440,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
                 if (task.isSuccessful()) {
 
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = currentUser.getUid();
-
-                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
+                    databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
 
                     HashMap<String, String> userMap = new HashMap<>();
                     userMap.put("role", customer_group);
@@ -454,11 +459,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         public void onComplete(@NonNull Task<Void> task) {
 
                             if (task.isSuccessful()) {
-                                loader.dismiss();
-                                Toast.makeText(getApplicationContext(), "Please Login to continue",
-                                        Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                finish();
+                                registerUser();
                             }
                         }
                     });
@@ -477,8 +478,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private void registerUser() {
 
-        loader.show();
-
         StringRequest req = new StringRequest(Request.Method.POST, Api.Signup_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -487,8 +486,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                             JSONObject jsonObject = new JSONObject(response);
                             boolean status = jsonObject.getBoolean("success");
                             if (status) {
-                                //String msg = jsonObject.getString("data");
-                                registerUserInFirebase();
+                                loader.dismiss();
+                                Toast.makeText(getApplicationContext(), "Please Login to continue",
+                                        Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                finish();
 
                             } else {
                                 loader.dismiss();
@@ -524,6 +526,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 map.put("country_id", country_id);
                 map.put("zone_id", state_id);
                 map.put("password", et_password.getText().toString());
+                map.put("firebase_id", currentUser.getUid());
                 return map;
             }
         };

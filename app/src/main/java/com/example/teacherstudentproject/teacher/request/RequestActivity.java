@@ -1,23 +1,19 @@
 package com.example.teacherstudentproject.teacher.request;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.teacherstudentproject.GetTimeAgo;
+import com.example.teacherstudentproject.chat.GetTimeAgo;
 import com.example.teacherstudentproject.R;
 import com.example.teacherstudentproject.student.ProfileActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -26,9 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RequestActivity extends AppCompatActivity {
 
@@ -78,11 +71,14 @@ public class RequestActivity extends AppCompatActivity {
             protected void populateViewHolder(final ViewHolder viewHolder, ModelRequest model, int i) {
 
                 final String list_user_id = getRef(i).getKey();
+                //Toast.makeText(getApplicationContext(), list_user_id, Toast.LENGTH_LONG).show();
                 //progressDialog.dismiss();
 
                 databaseReference.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        //progressDialog.dismiss();
 
                         final String id = dataSnapshot.getKey();
                         String firstname = dataSnapshot.child("firstname").getValue().toString();
@@ -115,6 +111,7 @@ public class RequestActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
+                        //progressDialog.hide();
                     }
                 });
             }
