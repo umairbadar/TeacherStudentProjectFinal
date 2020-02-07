@@ -216,37 +216,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 friendsMap.put("Friend_req/" + currentUser.getUid() + "/" + user_id, null);
                 friendsMap.put("Friend_req/" + user_id + "/" + currentUser.getUid(), null);
 
-                /*friendDatabase.child(currentUser.getUid()).child(user_id).setValue(currentDate)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                friendDatabase.child(user_id).child(currentUser.getUid()).setValue(currentDate)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-
-                                                friendReqdataRef.child(currentUser.getUid()).child(user_id)
-                                                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        friendReqdataRef.child(user_id).child(currentUser.getUid())
-                                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-
-                                                                btn_send_friend_req.setEnabled(true);
-                                                                current_state = "friends";
-                                                                btn_send_friend_req.setText("Unfriend " + user_name);
-                                                            }
-                                                        });
-                                                    }
-                                                });
-
-                                            }
-                                        });
-                            }
-                        });*/
-
                 mRootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -271,6 +240,38 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 });
 
 
+            }
+
+            if(current_state.equals("friends")){
+
+                Map unfriendMap = new HashMap();
+                unfriendMap.put("Friends/" + currentUser.getUid() + "/" + user_id, null);
+                unfriendMap.put("Friends/" + user_id + "/" + currentUser.getUid(), null);
+
+                mRootRef.updateChildren(unfriendMap, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+
+                        if(databaseError == null){
+
+                            current_state = "not_friends";
+                            btn_send_friend_req.setText("Send Friend Request");
+
+
+                        } else {
+
+                            String error = databaseError.getMessage();
+
+                            Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+
+
+                        }
+
+                        btn_send_friend_req.setEnabled(true);
+
+                    }
+                });
             }
 
 

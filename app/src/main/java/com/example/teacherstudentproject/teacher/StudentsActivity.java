@@ -1,11 +1,14 @@
 package com.example.teacherstudentproject.teacher;
 
 import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.example.teacherstudentproject.chat.ChatActivity;
 import com.example.teacherstudentproject.chat.GetTimeAgo;
 import com.example.teacherstudentproject.R;
+import com.example.teacherstudentproject.student.ProfileActivity;
 import com.example.teacherstudentproject.teacher.request.ModelRequest;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -107,9 +111,37 @@ public class StudentsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
 
-                                Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
-                                chatIntent.putExtra("user_id", list_user_id);
-                                startActivity(chatIntent);
+                                CharSequence options[] = new CharSequence[]{"Open Profile", "Send message"};
+
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(StudentsActivity.this);
+
+                                builder.setTitle("Select Options");
+                                builder.setItems(options, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        //Click Event for each item.
+                                        if(i == 0){
+
+                                            Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                            profileIntent.putExtra("user_id", list_user_id);
+                                            startActivity(profileIntent);
+
+                                        }
+
+                                        if(i == 1){
+
+                                            Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
+                                            chatIntent.putExtra("user_id", list_user_id);
+                                            startActivity(chatIntent);
+
+                                        }
+
+                                    }
+                                });
+
+                                builder.show();
+
                             }
                         });
                     }

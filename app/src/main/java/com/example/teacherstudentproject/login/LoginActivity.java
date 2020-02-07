@@ -114,10 +114,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         public void onSuccess(Void aVoid) {
 
                             if (customerGroup.equals("1")) {
-                                startActivity(new Intent(getApplicationContext(), TeacherActivity.class));
+                                Intent teacherIntent = new Intent(getApplicationContext(), TeacherActivity.class);
+                                teacherIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(teacherIntent);
                                 finish();
                             } else {
-                                startActivity(new Intent(getApplicationContext(), SelectCoursesActivity.class));
+                                Intent studentIntent = new Intent(getApplicationContext(), SelectCoursesActivity.class);
+                                studentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(studentIntent);
                                 finish();
                             }
                         }

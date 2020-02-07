@@ -77,10 +77,9 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
         Teacher_ID = intent.getStringExtra("teacher_id");
     }
 
-    private void initViews() {
-
-        fab_messages = findViewById(R.id.fab_message);
-        fab_send_req = findViewById(R.id.fab_send_req);
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
@@ -106,11 +105,11 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
                                         if (dataSnapshot.hasChild(User_Key_Firebase)){
 
-                                            fab_send_req.hide();
+                                            //fab_send_req.hide();
                                             fab_messages.show();
                                         } else {
 
-                                            fab_send_req.show();
+                                            //fab_send_req.show();
                                             fab_messages.hide();
                                         }
                                     }
@@ -130,7 +129,7 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
                     });
                 } else {
 
-                    fab_send_req.show();
+                    //fab_send_req.show();
                     fab_messages.hide();
                 }
             }
@@ -140,6 +139,12 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
             }
         });
+    }
+
+    private void initViews() {
+
+        fab_messages = findViewById(R.id.fab_message);
+        fab_send_req = findViewById(R.id.fab_send_req);
 
         loader = KProgressHUD.create(TeacherDetailActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
