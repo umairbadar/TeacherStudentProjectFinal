@@ -9,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,8 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.teacherstudentproject.R;
+import com.example.teacherstudentproject.student.ProfileActivity;
 import com.example.teacherstudentproject.welcome.WelcomeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -381,6 +384,28 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 et_message.setError("Please enter message");
                 et_message.requestFocus();
             } else {
+
+                DatabaseReference newNotificationref = FirebaseDatabase.getInstance().getReference().child("Msg_Notification").child(user_id).push();
+                String newNotificationId = newNotificationref.getKey();
+
+                HashMap<String, String> notificationData = new HashMap<>();
+                notificationData.put("from", currentUserID);
+                notificationData.put("msg", "text");
+
+                Map requestMap = new HashMap();
+                requestMap.put("notifications/msg/" + user_id + "/" + newNotificationId, notificationData);
+
+                rootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                        if(databaseError != null){
+
+                            Toast.makeText(ChatActivity.this, "There was some error in sending message", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
 
                 sendMessage();
             }
