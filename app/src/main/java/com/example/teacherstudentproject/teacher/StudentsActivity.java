@@ -133,6 +133,7 @@ public class StudentsActivity extends AppCompatActivity {
 
                                             Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
                                             chatIntent.putExtra("user_id", list_user_id);
+                                            chatIntent.putExtra("ParentClassName", "teacher.StudentsActivity");
                                             startActivity(chatIntent);
 
                                         }

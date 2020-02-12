@@ -89,12 +89,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         et_password = findViewById(R.id.et_password);
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-    }
-
     private void loginUserInFirebase(final String customerGroup) {
 
         mAuth.signInWithEmailAndPassword(et_email.getText().toString(), et_password.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

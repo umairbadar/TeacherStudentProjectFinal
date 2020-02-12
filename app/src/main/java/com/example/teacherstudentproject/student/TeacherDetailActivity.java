@@ -3,9 +3,13 @@ package com.example.teacherstudentproject.student;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,6 +17,8 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +81,11 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
         Intent intent = getIntent();
         Teacher_ID = intent.getStringExtra("teacher_id");
+        String activityName = getIntent().getStringExtra("activityName");
+        if (activityName.equals("ChatActivity")){
+
+            User_Key_Firebase = getIntent().getStringExtra("user_id");
+        }
     }
 
     @Override
@@ -325,6 +336,8 @@ public class TeacherDetailActivity extends AppCompatActivity implements View.OnC
 
                 Intent chatIntent = new Intent(getApplicationContext(), ChatActivity.class);
                 chatIntent.putExtra("user_id", User_Key_Firebase);
+                chatIntent.putExtra("ParentClassName","student.TeacherDetailActivity");
+                chatIntent.putExtra("teacher_id",Teacher_ID);
                 startActivity(chatIntent);
                 break;
 

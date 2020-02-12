@@ -210,12 +210,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-    }
-
     private void getAllCountries() {
 
         StringRequest req = new StringRequest(Request.Method.GET, Api.Countries_URL,

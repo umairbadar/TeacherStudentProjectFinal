@@ -40,8 +40,7 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String user_id, username, currentUserID;
-    private Toolbar toolbar;
+    private String user_id, username, currentUserID, teacher_id;
     private TextView custom_bar_name, custom_bar_last_seen;
     private DatabaseReference rootRef, userDatabase;
     private FirebaseAuth mAuth;
@@ -72,6 +71,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initViews() {
+
+        String parentActivityName = getIntent().getStringExtra("ParentClassName");
+        if (parentActivityName.equals("student.TeacherDetailActivity")){
+            teacher_id = getIntent().getStringExtra("teacher_id");
+        }
 
         user_id = getIntent().getStringExtra("user_id");
 
@@ -184,6 +188,39 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return getParentActivityIntentImplement();
+    }
+
+    @Override
+    public Intent getParentActivityIntent() {
+        return getParentActivityIntentImplement();
+    }
+
+    private Intent getParentActivityIntentImplement(){
+
+        Intent parentIntent= getIntent();
+        String className = parentIntent.getStringExtra("ParentClassName");
+
+        Intent newIntent=null;
+        try {
+
+            if (className.equals("teacher.StudentsActivity")) {
+                newIntent = new Intent(ChatActivity.this, Class.forName("com.example.teacherstudentproject." + className));
+            } else {
+                newIntent = new Intent(ChatActivity.this, Class.forName("com.example.teacherstudentproject." + className));
+                newIntent.putExtra("teacher_id", teacher_id);
+                newIntent.putExtra("user_id", user_id);
+                newIntent.putExtra("activityName", "ChatActivity");
+            }
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return newIntent;
     }
 
     @Override

@@ -47,6 +47,7 @@ public class Adapter_TeacherList extends RecyclerView.Adapter<Adapter_TeacherLis
                 Intent intent = new Intent(context, TeacherDetailActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("teacher_id", item.getID());
+                intent.putExtra("activityName", "TeacherList");
                 context.startActivity(intent);
             }
         });

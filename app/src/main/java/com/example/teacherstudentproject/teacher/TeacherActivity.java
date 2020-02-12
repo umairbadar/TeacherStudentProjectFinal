@@ -8,10 +8,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,7 +23,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -98,13 +105,7 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
         int id = item.getItemId();
 
         if (id == R.id.logout) {
-
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
-
-            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-            finish();
+            showDialog(this, "Are you sure you want to logout?");
         } else if (id == R.id.add_subject) {
             startActivity(new Intent(getApplicationContext(), CoursesActivity.class));
             finish();
@@ -121,6 +122,38 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return true;
+    }
+
+    public void showDialog(Activity activity, String msg) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.logout_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView text = (TextView) dialog.findViewById(R.id.text_dialog);
+        text.setText(msg);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.btn_ok);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.apply();
+                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                finish();
+            }
+        });
+        Button dialogCancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        dialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void initViews() {
