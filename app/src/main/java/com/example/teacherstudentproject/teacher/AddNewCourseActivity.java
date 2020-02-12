@@ -69,7 +69,8 @@ public class AddNewCourseActivity extends AppCompatActivity implements View.OnCl
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Initializing Views
         isNetworkAvailable();
@@ -176,12 +177,6 @@ public class AddNewCourseActivity extends AppCompatActivity implements View.OnCl
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(req);
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), CoursesActivity.class));
-        finish();
     }
 
     public void nextActivity() {

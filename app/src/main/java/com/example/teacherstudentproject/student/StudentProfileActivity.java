@@ -65,7 +65,8 @@ public class StudentProfileActivity extends AppCompatActivity implements View.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Initializing Views
         initViews();
@@ -171,12 +172,6 @@ public class StudentProfileActivity extends AppCompatActivity implements View.On
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(req);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), SelectCoursesActivity.class));
-        finish();
     }
 
     public void checkLocationPermission() {

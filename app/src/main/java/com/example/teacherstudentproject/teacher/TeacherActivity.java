@@ -108,10 +108,8 @@ public class TeacherActivity extends AppCompatActivity implements View.OnClickLi
             showDialog(this, "Are you sure you want to logout?");
         } else if (id == R.id.add_subject) {
             startActivity(new Intent(getApplicationContext(), CoursesActivity.class));
-            finish();
         } else if (id == R.id.portfolio) {
             startActivity(new Intent(getApplicationContext(), PortfolioDetailsActivity.class));
-            finish();
         } else if (id == R.id.requests) {
             Intent requestIntent = new Intent(getApplicationContext(), RequestActivity.class);
             requestIntent.putExtra("uid", uid);

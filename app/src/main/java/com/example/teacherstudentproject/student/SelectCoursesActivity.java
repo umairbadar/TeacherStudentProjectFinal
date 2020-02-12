@@ -98,7 +98,6 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
             showDialog(this, "Are you sure you want to logout?");
         } else if(id == R.id.profile){
             startActivity(new Intent(getApplicationContext(), StudentProfileActivity.class));
-            finish();
         }
 
         return true;
@@ -136,7 +135,6 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent(getApplicationContext(), TeacherListActivity.class);
         intent.putExtra("course_id", Course_ID);
         startActivity(intent);
-        finish();
     }
 
     private void initViews(){

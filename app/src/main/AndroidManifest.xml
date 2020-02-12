@@ -27,26 +27,33 @@
 
         </service>
 
-        <activity android:name=".chat.ChatActivity"/>
+        <activity android:name=".chat.ChatActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".teacher.StudentsActivity"
-            android:parentActivityName=".teacher.TeacherActivity" />
+            android:parentActivityName=".teacher.TeacherActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".teacher.request.RequestActivity"
             android:parentActivityName=".teacher.TeacherActivity" />
-        <activity android:name=".student.ProfileActivity" />
+        <activity android:name=".student.ProfileActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".teacher.AddNewCourseActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".teacher.CoursesActivity"/>
         <activity
             android:name=".teacher.CoursesActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".teacher.TeacherActivity"/>
         <activity
             android:name=".teacher.PortfolioDetailsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".teacher.TeacherActivity"/>
         <activity
             android:name=".student.StudentProfileActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".student.SelectCoursesActivity"/>
         <activity
             android:name=".student.TeacherDetailActivity"
             android:screenOrientation="portrait" />

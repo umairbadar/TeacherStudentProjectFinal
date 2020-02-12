@@ -103,13 +103,6 @@ public class TeacherListActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    public void onBackPressed() {
-
-        startActivity(new Intent(getApplicationContext(), SelectCoursesActivity.class));
-        finish();
-    }
-
     private void initView() {
 
         loader = KProgressHUD.create(TeacherListActivity.this)

@@ -70,7 +70,8 @@ public class CoursesActivity extends AppCompatActivity implements View.OnClickLi
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Initializing Views
         isNetworkAvailable(1);
@@ -338,12 +339,6 @@ public class CoursesActivity extends AppCompatActivity implements View.OnClickLi
         Toast.makeText(getApplicationContext(), final_id, Toast.LENGTH_LONG).show();*/
     }
 
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), TeacherActivity.class));
-        finish();
-    }
-
     private void deleteCourse() {
 
         //if (!list_ids.toString().equals("[]")) {
@@ -422,7 +417,6 @@ public class CoursesActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.tv_new_course:
                 startActivity(new Intent(getApplicationContext(), AddNewCourseActivity.class));
-                finish();
                 break;
 
             case R.id.btn_save_list:
