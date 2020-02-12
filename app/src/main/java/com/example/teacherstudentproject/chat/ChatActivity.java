@@ -129,7 +129,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (online.equals("true")) {
 
-                    custom_bar_last_seen.setText("Online");
+                    custom_bar_last_seen.setText("online");
                 } else {
                     long lastTime = Long.parseLong(online);
                     String lastSeenTime = GetTimeAgo.getTimeAgo(lastTime, getApplicationContext());
