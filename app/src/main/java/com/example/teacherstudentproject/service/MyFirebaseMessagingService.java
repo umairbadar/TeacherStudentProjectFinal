@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 
 import com.example.teacherstudentproject.R;
+import com.example.teacherstudentproject.chat.ChatActivity;
 import com.example.teacherstudentproject.student.SelectCoursesActivity;
 import com.example.teacherstudentproject.teacher.TeacherActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -28,12 +29,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        if (remoteMessage.getData().isEmpty()) {
-
-            showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+        if (ChatActivity.active) {
+            //do nothing
         } else {
 
-            showNotification(remoteMessage.getData());
+            if (remoteMessage.getData().isEmpty()) {
+
+                showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+            } else {
+
+                showNotification(remoteMessage.getData());
+            }
         }
 
     }
@@ -47,7 +53,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body = data.get("body").toString();
         String user_role = data.get("user_role").toString();
 
-        if (user_role.equals("1")){
+        if (user_role.equals("1")) {
 
             intent = new Intent(getApplicationContext(), TeacherActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -58,19 +64,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String Notification_Channel_ID = "com.example.teacherstudentproject.test";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            NotificationChannel notificationChannel = new NotificationChannel(Notification_Channel_ID, "Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(Notification_Channel_ID, "Notification", NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription("TeacherStudentProject");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
+            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            //notificationChannel.enableVibration(true);
             notificationChannel.setSound(defaultSoundUri, null);
             notificationChannel.enableLights(true);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -84,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSound(defaultSoundUri)
-                .setVibrate(new long[]{0, 1000, 500, 1000})
+                //.setVibrate(new long[]{0, 1000, 500, 1000})
                 .setContentInfo("Info")
                 .setContentIntent(pendingIntent);
 
@@ -99,12 +105,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            NotificationChannel notificationChannel = new NotificationChannel(Notification_Channel_ID, "Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(Notification_Channel_ID, "Notification", NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription("TeacherStudentProject");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
+            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            //notificationChannel.enableVibration(true);
             notificationChannel.setSound(defaultSoundUri, null);
             notificationChannel.enableLights(true);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -117,7 +123,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.icon)
                 .setContentTitle(title)
                 .setSound(defaultSoundUri)
-                .setVibrate(new long[]{0, 1000, 500, 1000})
+                //.setVibrate(new long[]{0, 1000, 500, 1000})
                 .setContentText(body)
                 .setContentInfo("Info");
 

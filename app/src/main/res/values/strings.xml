@@ -72,6 +72,8 @@
     <string name="last_seen">Last Seen</string>
     <string name="status">Status</string>
     <string name="cancel">Cancel</string>
+    <string name="type_a_message">Type a Message</string>
+    <string name="hello">Hello</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

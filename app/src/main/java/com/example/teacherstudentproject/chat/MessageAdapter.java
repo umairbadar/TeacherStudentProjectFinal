@@ -1,18 +1,17 @@
 package com.example.teacherstudentproject.chat;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.teacherstudentproject.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -22,10 +21,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     private List<Messages> mMessageList;
     private DatabaseReference mUserDatabase;
+    private Context context;
 
-    public MessageAdapter(List<Messages> mMessageList) {
+    public MessageAdapter(List<Messages> mMessageList, Context context) {
 
         this.mMessageList = mMessageList;
+        this.context = context;
 
     }
 
@@ -43,12 +44,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public TextView messageText;
         public TextView displayName;
+        public RelativeLayout relativeLayout;
 
         public MessageViewHolder(View view) {
             super(view);
 
             messageText = (TextView) view.findViewById(R.id.message_user_text);
-            displayName = (TextView) view.findViewById(R.id.message_user_name);
+            relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
+            //displayName = (TextView) view.findViewById(R.id.message_user_name);
 
         }
     }
@@ -60,7 +63,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         String from_user = c.getFrom();
 
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
+        if (ChatActivity.currentUserID.equals(c.getFrom())){
+
+            RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params1.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+
+            viewHolder.messageText.setLayoutParams(params1);
+            viewHolder.messageText.setText(c.getMessage());
+            viewHolder.messageText.setBackgroundResource(R.drawable.tv_bg_gray);
+            viewHolder.messageText.setTextColor(Color.BLACK);
+
+        } else {
+
+            RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+
+            viewHolder.messageText.setLayoutParams(params1);
+            viewHolder.messageText.setText(c.getMessage());
+            viewHolder.messageText.setBackgroundResource(R.drawable.tv_bg_blue);
+            viewHolder.messageText.setTextColor(Color.WHITE);
+        }
+
+        /*mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
 
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -75,9 +99,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
-
-        viewHolder.messageText.setText(c.getMessage());
+        });*/
     }
 
     @Override

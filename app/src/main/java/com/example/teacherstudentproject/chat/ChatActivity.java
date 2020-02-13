@@ -40,7 +40,7 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String user_id, username, currentUserID, teacher_id;
+    public static String user_id, currentUserID, teacher_id;
     private TextView custom_bar_name, custom_bar_last_seen;
     private DatabaseReference rootRef, userDatabase;
     private FirebaseAuth mAuth;
@@ -61,6 +61,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private String mLastKey = "";
     private String mPrevKey = "";
 
+    public static boolean active = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +75,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
 
         String parentActivityName = getIntent().getStringExtra("ParentClassName");
-        if (parentActivityName.equals("student.TeacherDetailActivity")){
+        if (parentActivityName.equals("student.TeacherDetailActivity")) {
             teacher_id = getIntent().getStringExtra("teacher_id");
         }
 
@@ -107,7 +109,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         custom_bar_last_seen = findViewById(R.id.custom_bar_last_seen);
         et_message = findViewById(R.id.et_message);
 
-        mAdapter = new MessageAdapter(messagesList);
+        mAdapter = new MessageAdapter(messagesList, getApplicationContext());
 
         messageList = findViewById(R.id.messageList);
         mRefreshLayout = findViewById(R.id.message_swipe_layout);
@@ -200,12 +202,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         return getParentActivityIntentImplement();
     }
 
-    private Intent getParentActivityIntentImplement(){
+    private Intent getParentActivityIntentImplement() {
 
-        Intent parentIntent= getIntent();
+        Intent parentIntent = getIntent();
         String className = parentIntent.getStringExtra("ParentClassName");
 
-        Intent newIntent=null;
+        Intent newIntent = null;
         try {
 
             if (className.equals("teacher.StudentsActivity")) {
@@ -227,6 +229,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
+        active = true;
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
@@ -242,6 +246,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
+
+        active = false;
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -421,29 +427,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 et_message.setError("Please enter message");
                 et_message.requestFocus();
             } else {
-
-                DatabaseReference newNotificationref = FirebaseDatabase.getInstance().getReference().child("Msg_Notification").child(user_id).push();
-                String newNotificationId = newNotificationref.getKey();
-
-                HashMap<String, String> notificationData = new HashMap<>();
-                notificationData.put("from", currentUserID);
-                notificationData.put("msg", "text");
-
-                Map requestMap = new HashMap();
-                requestMap.put("notifications/msg/" + user_id + "/" + newNotificationId, notificationData);
-
-                rootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                        if(databaseError != null){
-
-                            Toast.makeText(ChatActivity.this, "There was some error in sending message", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-
                 sendMessage();
             }
         }
