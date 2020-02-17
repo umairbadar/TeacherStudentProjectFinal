@@ -65,7 +65,7 @@ public class StudentProfileActivity extends AppCompatActivity implements View.On
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Initializing Views
