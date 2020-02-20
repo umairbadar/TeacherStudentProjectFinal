@@ -68,6 +68,11 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
     private ArrayList<String> arr_courses_id;
     private String Course_ID;
 
+    //Course Level
+    private Spinner spn_course_level;
+    private ArrayList<String> arr_course_level;
+    private String course_level;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +99,9 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.logout){
+        if (id == R.id.logout) {
             showDialog(this, "Are you sure you want to logout?");
-        } else if(id == R.id.profile){
+        } else if (id == R.id.profile) {
             startActivity(new Intent(getApplicationContext(), StudentProfileActivity.class));
         }
 
@@ -111,7 +116,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
 
             getCoursesCategory();
         } else if (networkInfo == null) {
-            Toast.makeText(getApplicationContext(),R.string.no_internet_msg,
+            Toast.makeText(getApplicationContext(), R.string.no_internet_msg,
                     Toast.LENGTH_LONG).show();
         }
 
@@ -123,26 +128,41 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
         // if no network is available networkInfo will be null, otherwise check if we are connected
         if (networkInfo != null && networkInfo.isConnected()) {
 
-           callNextActivity();
+            callNextActivity();
         } else if (networkInfo == null) {
-            Toast.makeText(getApplicationContext(),R.string.no_internet_msg,
+            Toast.makeText(getApplicationContext(), R.string.no_internet_msg,
                     Toast.LENGTH_LONG).show();
         }
 
     }
 
-    private void callNextActivity(){
+    private void callNextActivity() {
         Intent intent = new Intent(getApplicationContext(), TeacherListActivity.class);
         intent.putExtra("course_id", Course_ID);
         startActivity(intent);
     }
 
-    private void initViews(){
+    private void initViews() {
 
         loader = KProgressHUD.create(SelectCoursesActivity.this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setBackgroundColor(R.color.blue)
                 .setCancellable(false);
+
+        //Course Level
+        spn_course_level = findViewById(R.id.spn_course_level);
+        arr_course_level = new ArrayList<>();
+
+        arr_course_level.add("Select Course Level");
+        arr_course_level.add("Pre-School Level");
+        arr_course_level.add("School Level");
+        arr_course_level.add("High School Level");
+        arr_course_level.add("Graduate Level");
+        arr_course_level.add("Masters Level");
+        arr_course_level.add("Doctorate Level");
+
+        spn_course_level.setAdapter(new ArrayAdapter<>(SelectCoursesActivity.this,
+                android.R.layout.simple_spinner_dropdown_item, arr_course_level));
 
         //Course Category
         spn_course_cat = findViewById(R.id.spn_course_cat);
@@ -154,8 +174,9 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Course_Cat_ID = arr_courses_cat_id.get(position);
-                if (!Course_Cat_ID.equals("0")){
+                if (!Course_Cat_ID.equals("0")) {
                     getCourses(Course_Cat_ID);
+                    spn_course_level.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -181,9 +202,23 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
 
             }
         });
+
+        spn_course_level.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                course_level = spn_course_level.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
 
-    private void getCoursesCategory(){
+    private void getCoursesCategory() {
 
         loader.show();
 
@@ -197,7 +232,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
                             arr_courses_cat.add("Select Course Category");
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray jsonArray = jsonObject.getJSONArray("categories");
-                            for (int i = 0; i < jsonArray.length(); i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject object = jsonArray.getJSONObject(i);
                                 arr_courses_cat_id.add(object.getString("category_id"));
                                 arr_courses_cat.add(object.getString("name"));
@@ -222,7 +257,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
         requestQueue.add(req);
     }
 
-    private void getCourses(final String CatID){
+    private void getCourses(final String CatID) {
 
         arr_courses.clear();
         arr_courses_id.clear();
@@ -235,10 +270,10 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
                             spn_courses.setTitle("Select Courses");
                             JSONObject jsonObject = new JSONObject(response);
                             boolean status = jsonObject.getBoolean("success");
-                            if (status){
+                            if (status) {
                                 spn_courses.setVisibility(View.VISIBLE);
                                 JSONArray jsonArray = jsonObject.getJSONArray("courses");
-                                for (int i = 0;i < jsonArray.length(); i++){
+                                for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject object = jsonArray.getJSONObject(i);
                                     arr_courses_id.add(object.getString("id"));
                                     arr_courses.add(object.getString("name"));
@@ -263,7 +298,7 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
                         Toast.makeText(getApplicationContext(), error.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
-                }){
+                }) {
 
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -312,15 +347,22 @@ public class SelectCoursesActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.btn_find_teacher){
+        if (v.getId() == R.id.btn_find_teacher) {
 
-            if (spn_course_cat.getSelectedItemPosition() == 0){
+            if (spn_course_cat.getSelectedItemPosition() == 0) {
                 Toast.makeText(getApplicationContext(), "Select Course Category",
                         Toast.LENGTH_LONG).show();
-            }  else {
+            } else {
 
-                if (spn_courses.getVisibility() == View.VISIBLE){
-                    isNetworkAvailable();
+                if (spn_courses.getVisibility() == View.VISIBLE) {
+
+                    if (spn_course_level.getSelectedItemPosition() == 0) {
+                        Toast.makeText(getApplicationContext(), "Please select course level",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        isNetworkAvailable();
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "No Courses Found!",
                             Toast.LENGTH_LONG).show();

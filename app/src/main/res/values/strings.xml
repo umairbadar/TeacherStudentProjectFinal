@@ -74,6 +74,7 @@
     <string name="cancel">Cancel</string>
     <string name="type_a_message">Type a Message</string>
     <string name="hello">Hello</string>
+    <string name="select_course_level_from_below">Select Course Level from below</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

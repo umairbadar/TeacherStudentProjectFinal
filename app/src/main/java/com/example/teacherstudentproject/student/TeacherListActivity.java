@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -23,11 +22,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.teacherstudentproject.endpoints.Api;
 import com.example.teacherstudentproject.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONArray;
@@ -38,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class TeacherListActivity extends AppCompatActivity {
 
@@ -52,15 +45,10 @@ public class TeacherListActivity extends AppCompatActivity {
     private Adapter_TeacherList adapter;
     private List<Model_TeacherList> arr_list;
 
-    DatabaseReference dbArtists;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_list);
-
-        dbArtists = FirebaseDatabase.getInstance().getReference().child("Users");
-        dbArtists.addListenerForSingleValueEvent(valueEventListener);
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPre", MODE_PRIVATE);
         latitude = sharedPreferences.getString("latitude", "");
@@ -76,32 +64,6 @@ public class TeacherListActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Course_ID = intent.getStringExtra("course_id");
     }
-
-    ValueEventListener valueEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            //artistList.clear();
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    /*Artist artist = snapshot.getValue(Artist.class);
-                    artistList.add(artist);*/
-
-                    if (snapshot.child("courses").hasChild("science")) {
-
-                        Toast.makeText(getApplicationContext(), snapshot.toString(),
-                                Toast.LENGTH_LONG).show();
-                        Log.e("Data", snapshot.toString());
-                    }
-                }
-                //adapter.notifyDataSetChanged();
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-
-        }
-    };
 
     private void initView() {
 
@@ -150,14 +112,13 @@ public class TeacherListActivity extends AppCompatActivity {
                                     JSONObject object = jsonArray.getJSONObject(i);
                                     String id = object.getString("teacher_id");
                                     String name = object.getString("firstname") + " " + object.getString("lastname");
-                                    //String distance = object.getString("distance");
                                     double distance_in_KM = Double.parseDouble(object.getString("distance"));
-                                    double distanec_in_Miles = distance_in_KM * 0.621;
+                                    double distance_in_Miles = distance_in_KM * 0.621;
 
                                     Model_TeacherList item = new Model_TeacherList(
                                             id,
                                             name,
-                                            String.format("%.2f miles away", distanec_in_Miles)
+                                            String.format("%.2f miles away", distance_in_Miles)
                                     );
                                     arr_list.add(item);
                                 }

@@ -50,6 +50,13 @@
             android:layout_marginTop="10dp"
             android:visibility="gone" />
 
+        <Spinner
+            android:id="@+id/spn_course_level"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
+
         <Button
             android:id="@+id/btn_find_teacher"
             android:layout_width="match_parent"
